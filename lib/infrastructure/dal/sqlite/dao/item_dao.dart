@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_estudos_sqlite/infrastructure/dal/sqlite/connection/sqlite_connection.dart';
 import 'package:flutter_estudos_sqlite/infrastructure/dal/sqlite/entities/item_entity.dart';
-import 'package:sqflite/sqflite.dart' as sqflite;
+import 'package:sqflite/sqflite.dart';
 
 class ItemDao {
   final SqliteConnection connection;
@@ -14,7 +14,7 @@ class ItemDao {
     final id = await db.insert(
       'items',
       item.toMap(),
-      conflictAlgorithm: sqflite.ConflictAlgorithm.replace,
+      conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
     return id;

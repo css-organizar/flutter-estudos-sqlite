@@ -2,16 +2,16 @@ import 'dart:async';
 
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sqflite/sqflite.dart' as sqflite;
+import 'package:sqflite/sqflite.dart';
 
 class SqliteConnection {
   SqliteConnection._();
 
-  static Completer<sqflite.Database>? _dbOpenCompleter;
+  static Completer<Database>? _dbOpenCompleter;
   static final SqliteConnection _instance = SqliteConnection._();
   static SqliteConnection get instance => _instance;
 
-  Future<void> createTables(sqflite.Database database) async {
+  Future<void> createTables(Database database) async {
     await database.execute("""CREATE TABLE items(
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         title TEXT,
@@ -21,7 +21,7 @@ class SqliteConnection {
       """);
   }
 
-  Future<sqflite.Database> get db async {
+  Future<Database> get db async {
     if (_dbOpenCompleter == null) {
       _dbOpenCompleter = Completer();
       _openDatabase();
@@ -34,11 +34,11 @@ class SqliteConnection {
     final appDocumentDir = await getApplicationDocumentsDirectory();
     final dbPath = join(appDocumentDir.path, 'kindacode.db');
 
-    final database = sqflite.openDatabase(
+    final database = openDatabase(
       dbPath,
       version: 1,
       onCreate: (
-        sqflite.Database database,
+        Database database,
         int version,
       ) async {
         await createTables(database);
