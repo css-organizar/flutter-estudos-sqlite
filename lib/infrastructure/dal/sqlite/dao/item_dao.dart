@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_estudos_sqlite/infrastructure/dal/sqlite/connection/sqlite_connection.dart';
+import 'package:flutter_estudos_sqlite/infrastructure/dal/sqlite/entities/item_entity.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 
 class ItemDao {
@@ -7,28 +8,27 @@ class ItemDao {
 
   ItemDao(this.connection);
 
-  Future<int> insert(String title, String? descrption) async {
+  Future<int> insert(ItemEntity item) async {
     final db = await SqliteConnection.instance.db;
-    final data = {'title': title, 'description': descrption};
 
     final id = await db.insert(
       'items',
-      data,
+      item.toMap(),
       conflictAlgorithm: sqflite.ConflictAlgorithm.replace,
     );
 
     return id;
   }
 
-  Future<int> update(int id, String title, String? descrption) async {
+  Future<int> update(ItemEntity item) async {
     final db = await SqliteConnection.instance.db;
-    final data = {'title': title, 'description': descrption, 'createdAt': DateTime.now().toString()};
+    item.createdAt = DateTime.now().toString();
 
     final result = await db.update(
       'items',
-      data,
+      item.toMap(),
       where: "id = ?",
-      whereArgs: [id],
+      whereArgs: [item.id],
     );
 
     return result;
