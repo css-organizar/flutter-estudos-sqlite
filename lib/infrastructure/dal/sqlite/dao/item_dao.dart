@@ -8,7 +8,7 @@ class ItemDao {
   ItemDao(this.connection);
 
   Future<int> insert(String title, String? descrption) async {
-    final db = await SqliteConnection.instance.db();
+    final db = await SqliteConnection.instance.db;
     final data = {'title': title, 'description': descrption};
 
     final id = await db.insert(
@@ -21,7 +21,7 @@ class ItemDao {
   }
 
   Future<int> update(int id, String title, String? descrption) async {
-    final db = await SqliteConnection.instance.db();
+    final db = await SqliteConnection.instance.db;
     final data = {'title': title, 'description': descrption, 'createdAt': DateTime.now().toString()};
 
     final result = await db.update(
@@ -35,7 +35,7 @@ class ItemDao {
   }
 
   Future<void> delete(int id) async {
-    final db = await SqliteConnection.instance.db();
+    final db = await SqliteConnection.instance.db;
 
     try {
       await db.delete(
@@ -49,7 +49,7 @@ class ItemDao {
   }
 
   Future<List<Map<String, dynamic>>> getItems() async {
-    final db = await SqliteConnection.instance.db();
+    final db = await SqliteConnection.instance.db;
 
     return db.query(
       'items',
@@ -58,7 +58,7 @@ class ItemDao {
   }
 
   Future<List<Map<String, dynamic>>> getItem(int id) async {
-    final db = await SqliteConnection.instance.db();
+    final db = await SqliteConnection.instance.db;
 
     return db.query(
       'items',

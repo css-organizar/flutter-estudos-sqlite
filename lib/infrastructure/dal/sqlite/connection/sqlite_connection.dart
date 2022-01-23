@@ -1,8 +1,13 @@
+import 'dart:async';
+
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 
 class SqliteConnection {
   SqliteConnection._();
 
+  static Completer<sqflite.Database>? _dbOpenCompleter;
   static final SqliteConnection _instance = SqliteConnection._();
   static SqliteConnection get instance => _instance;
 
@@ -16,13 +21,29 @@ class SqliteConnection {
       """);
   }
 
-  Future<sqflite.Database> db() async {
-    return sqflite.openDatabase(
-      'kindacode.db',
+  Future<sqflite.Database> get db async {
+    if (_dbOpenCompleter == null) {
+      _dbOpenCompleter = Completer();
+      _openDatabase();
+    }
+
+    return _dbOpenCompleter!.future;
+  }
+
+  Future _openDatabase() async {
+    final appDocumentDir = await getApplicationDocumentsDirectory();
+    final dbPath = join(appDocumentDir.path, 'kindacode.db');
+
+    final database = sqflite.openDatabase(
+      dbPath,
       version: 1,
-      onCreate: (sqflite.Database database, int version) async {
+      onCreate: (
+        sqflite.Database database,
+        int version,
+      ) async {
         await createTables(database);
       },
     );
+    _dbOpenCompleter!.complete(database);
   }
 }
